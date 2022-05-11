@@ -11,13 +11,13 @@ load_dotenv()
 def create_app(test_config=None):
     app = Flask(__name__)
 
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    
     if not test_config:
-        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
             "SQLALCHEMY_DATABASE_URI")
     else:
         app.config["TESTING"] = True
-        app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
         app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
             "SQLALCHEMY_TEST_DATABASE_URI")
 
@@ -25,6 +25,7 @@ def create_app(test_config=None):
     migrate.init_app(app, db)
 
     from app.models.planet import Planet
+    from app.models.moon import Moon
 
     from .routes import planets_bp
     app.register_blueprint(planets_bp)
